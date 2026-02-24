@@ -1,0 +1,37 @@
+# SynergySquad Live Quiz System Walkthrough
+
+I have successfully designed and built the complete real-time quiz application. Here's a breakdown of what was accomplished based on your requirements.
+
+## 1. System Architecture
+Built using a monolithic repository structure with separate `frontend` and `backend` directories. The backend utilizes **Node.js, Express, and Socket.io** alongside a local **MongoDB** database to reliably track state and connections. The frontend is powered by **React** (Vite wrapper) and styled heavily using **Tailwind CSS**.
+
+## 2. Real-time Features and UI Implementations
+
+### The Host Dashboard
+- Accessible at `/host`.
+- Features an aggregated view of the live quiz state.
+- **Live Monitoring**: Instantly reflects locking status for all 4 teams, revealing whether they are waiting, locked, correct, or skipped.
+- **Quiz Controls**: Contains logic to start the quiz, end questions, reveal answers, and show explanations gracefully.
+- The state seamlessly tracks when the 1-minute timer expires, disabling further locks automatically.
+
+### The Team Dashboards
+- Accessible at `/team/:teamId` (e.g., Team A, B, C, D).
+- Clean, blocky UI tailored for quick navigation in heated environments.
+- Distinguishes between **MCQ** (click-based selection) and **Fill-in-the-blanks** (text inputs).
+- A **Lock Answer** button secures their choice, freezing their selection client-side and submitting their timestamp directly to the socket server.
+
+## 3. The Scoring Engine
+The backend implements the precision scoring algorithm within [backend/utils/scoring.js](file:///C:/Users/ManojA/Documents/Quiz/Antigravity/backend/utils/scoring.js):
+- Upon the host firing `host:reveal_answer`, the system maps over all the recorded submissions for the current question.
+- Submissions are chronologically ordered based on their lock timestamps.
+- **Correct Points:** 1st place (+4), 2nd place (+3), 3rd place (+2), 4th place (+1).
+- **Penalty Logic:** First incorrect answer receives (-2), while subsequent incorrect answers receive (-1).
+- Skipped questions yield no point penalty.
+- The live leaderboard automatically animates with the synced point accruement.
+
+## 4. Setup and Validation
+The database seeds itself automatically. Upon the very first boot of [backend/server.js](file:///C:/Users/ManojA/Documents/Quiz/Antigravity/backend/server.js), it injects 20 technical programming questions and instantiates Teams A-D. 
+
+For full technical details on Socket Events mappings and codebase layout, I have generated a comprehensive [README.md](file:///C:/Users/ManojA/Documents/Quiz/Antigravity/README.md) file residing in the root folder. You can reference this document for local test runs and deployment scripts.
+
+You are fully ready to engage your SynergySquad teams!
